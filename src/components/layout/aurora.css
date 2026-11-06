@@ -1,0 +1,202 @@
+/* ---------------------------------------------------------------------------
+   Aurora background + glass strength.
+
+   Self-contained and unlayered on purpose: it wins over globals.css regardless
+   of load order, so edits here always take effect. Tweak the look in this file.
+--------------------------------------------------------------------------- */
+
+/* Stronger frosted glass — overrides tokens in globals.css.
+   Dark translucent tint (not white) so text keeps contrast even when the bright
+   bloom drifts behind the panel. :root:root / html.light:root beat a plain
+   :root selector, so these win. */
+:root:root {
+  --glass-bg: color-mix(in srgb, var(--color-ink) 28%, transparent);
+  --glass-border: color-mix(in srgb, var(--color-paper) 30%, transparent);
+  --glass-hi: color-mix(in srgb, var(--color-paper) 45%, transparent);
+  --glass-blur: 44px;
+  --glass-sat: 1.45;
+  --aurora-op: 1;
+}
+html.light:root {
+  --glass-bg: color-mix(in srgb, var(--color-white) 66%, transparent);
+  --glass-border: color-mix(in srgb, var(--color-ink) 10%, transparent);
+  --glass-hi: color-mix(in srgb, var(--color-white) 80%, transparent);
+  --glass-blur: 44px;
+  --glass-sat: 1.25;
+  --aurora-op: 0.7;
+}
+
+/* Fixed field (unlayered → beats globals' @layer rules) */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: var(--aurora-op, 1);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Soft volumetric light — each layer wanders on its own offset so the overall
+   motion never lines up into an obvious loop. */
+.aurora__flow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(30px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+.aurora__flow--1 {
+  width: 72vw;
+  height: 72vw;
+  left: -12%;
+  top: 14%;
+  background: radial-gradient(circle, var(--color-blue), transparent 60%);
+  animation: aurora-flow-a 17s ease-in-out -5s infinite;
+}
+.aurora__flow--2 {
+  width: 60vw;
+  height: 60vw;
+  right: -8%;
+  bottom: -16%;
+  background: radial-gradient(circle, var(--color-blue-light), transparent 62%);
+  animation: aurora-flow-b 21s ease-in-out -13s infinite;
+}
+.aurora__flow--3 {
+  width: 46vw;
+  height: 46vw;
+  right: -4%;
+  top: 2%;
+  background: radial-gradient(circle, var(--color-blue), transparent 62%);
+  animation: aurora-flow-c 23s ease-in-out -8s infinite;
+}
+.aurora__flow--bloom {
+  width: 62vw;
+  height: 62vw;
+  left: 30%;
+  top: 22%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    #fff,
+    var(--color-blue-light) 36%,
+    transparent 60%
+  );
+  animation: aurora-bloom 14s ease-in-out -3s infinite;
+}
+
+/* Dark glossy twisting sheet */
+.aurora__fold {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.aurora__fold-move {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  animation: aurora-fold 25s ease-in-out -11s infinite;
+}
+
+/* The Tailwind/Lightning CSS compiler drops the backdrop-filter declaration
+   from globals.css's @layer `.glass-panel` rule, so the cards render with no
+   blur. Re-declare it here, unlayered, so it actually takes effect. */
+.glass-panel {
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+}
+.about-card::before {
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+}
+
+/* Irregular, multi-point paths so each layer meanders instead of ping-ponging */
+@keyframes aurora-flow-a {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  23% {
+    transform: translate(7%, 3%) scale(1.14);
+  }
+  51% {
+    transform: translate(2%, 8%) scale(0.97);
+  }
+  74% {
+    transform: translate(-5%, 5%) scale(1.12);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+@keyframes aurora-flow-b {
+  0% {
+    transform: translate(0, 0) scale(1.08);
+  }
+  28% {
+    transform: translate(-6%, 4%) scale(0.95);
+  }
+  55% {
+    transform: translate(-2%, -5%) scale(1.15);
+  }
+  78% {
+    transform: translate(5%, 2%) scale(1);
+  }
+  100% {
+    transform: translate(0, 0) scale(1.08);
+  }
+}
+@keyframes aurora-flow-c {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  26% {
+    transform: translate(5%, -5%) scale(1.18);
+  }
+  52% {
+    transform: translate(-4%, -2%) scale(0.96);
+  }
+  77% {
+    transform: translate(3%, 6%) scale(1.1);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+@keyframes aurora-bloom {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.9;
+  }
+  30% {
+    transform: translate(6%, 4%) scale(1.14);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(-4%, 6%) scale(1.02);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.9;
+  }
+}
+@keyframes aurora-fold {
+  0% {
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+  33% {
+    transform: translateX(-4%) rotate(2.5deg) scale(1.05);
+  }
+  66% {
+    transform: translateX(3%) rotate(-2deg) scale(1.03);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora__flow,
+  .aurora__fold-move {
+    animation: none !important;
+  }
+}
