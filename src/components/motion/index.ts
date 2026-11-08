@@ -10,3 +10,5 @@ export { UncoverImage } from "./uncover-image";
 export type { UncoverImageProps } from "./uncover-image";
 export { MaskReveal } from "./mask-reveal";
 export type { MaskRevealProps } from "./mask-reveal";
+export { TwistCarousel } from "./twist-carousel";
+export type { TwistItem, TwistCarouselProps } from "./twist-carousel";

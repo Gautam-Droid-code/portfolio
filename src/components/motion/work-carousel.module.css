@@ -1,0 +1,194 @@
+/* Selected-work carousel. Cards fan from the active one: a curved vertical arc
+   on desktop, a hand-of-cards fan on mobile. The layout switch is pure CSS,
+   driven by each card's --o (signed offset) and --a (abs offset) variables. */
+
+.root {
+  display: grid;
+  gap: 4.5rem 3rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .root {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+}
+
+.stage {
+  position: relative;
+  height: 380px;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+@media (min-width: 1024px) {
+  .stage {
+    height: 430px;
+    perspective: 1500px;
+  }
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 232px;
+  height: 310px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface);
+  box-shadow: 0 24px 55px -24px rgba(0, 0, 0, 0.7);
+  z-index: calc(100 - var(--a));
+  opacity: calc(1 - var(--a) * 0.34);
+  /* mobile: hand-of-cards fan */
+  transform: translateX(calc(var(--o) * 50px)) translateY(calc(var(--a) * 20px))
+    rotate(calc(var(--o) * 7deg)) scale(calc(1 - var(--a) * 0.08));
+  transition:
+    transform 0.6s var(--ease-out-expo),
+    opacity 0.6s var(--ease-out-expo),
+    box-shadow 0.4s var(--ease-out-expo);
+}
+
+@media (min-width: 1024px) {
+  /* desktop: a single tilted card that twists in 3D as you change slides */
+  .card {
+    width: 440px;
+    height: 300px;
+    transform: translateX(calc(var(--o) * 360px))
+      translateY(calc(var(--a) * -8px)) rotateY(calc(-12deg + var(--o) * -26deg))
+      rotateZ(calc(-6deg + var(--o) * -5deg)) scale(calc(1 - var(--a) * 0.12));
+    opacity: calc(1 - var(--a) * 0.82);
+    transition:
+      transform 0.8s var(--ease-out-expo),
+      opacity 0.8s var(--ease-out-expo),
+      box-shadow 0.5s var(--ease-out-expo);
+  }
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.card[aria-current="true"] {
+  box-shadow: 0 34px 80px -28px color-mix(in srgb, var(--accent) 55%, #000);
+}
+
+.img {
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.12) 52%,
+    transparent 78%
+  );
+}
+
+.meta {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.1rem 1.2rem;
+  text-align: left;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1.55rem;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: #f5f5f0;
+}
+
+.cat {
+  color: rgba(245, 245, 240, 0.7);
+}
+
+.controls {
+  position: absolute;
+  left: 50%;
+  bottom: -3rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  z-index: 200;
+}
+
+.nav {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--foreground);
+  transition:
+    background-color 0.2s var(--ease-out-expo),
+    transform 0.2s var(--ease-out-expo);
+}
+
+.nav:hover {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--hairline-strong);
+  transition:
+    width 0.3s var(--ease-out-expo),
+    background-color 0.3s var(--ease-out-expo);
+}
+
+.dotOn {
+  width: 1.5rem;
+  background: var(--accent);
+}
+
+.detail {
+  animation: fadeIn 0.5s var(--ease-out-expo);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none !important;
+  }
+
+  .detail {
+    animation: none !important;
+  }
+}

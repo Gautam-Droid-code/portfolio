@@ -19,9 +19,11 @@ export const siteConfig = {
   whatsapp: `https://wa.me/918855882679?text=${encodeURIComponent(
     projectMessage,
   )}`,
-  // Self-hosted copy of the exported scene (my.spline.design/.../scene.splinecode):
-  // the CDN edge drops its CORS header for some browser cache variants.
-  splineScene: "/hero/avatar-scene.splinecode",
+  // Spline-hosted export (reframed full-figure, transparent background).
+  // If the CDN edge drops its CORS header on some cached requests, fall back to
+  // self-hosting: drop the .splinecode into public/hero/ and point this at
+  // "/hero/avatar-scene.splinecode".
+  splineScene: "https://prod.spline.design/b0PZiiZ4vBcrth2e/scene.splinecode",
   socials: {
     github: "https://github.com/Gautam-Droid-code",
     x: "https://x.com/gautamsingh2003",

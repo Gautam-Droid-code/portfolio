@@ -1,11 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-
 import { StackCard } from "@/components/motion";
 import { siteConfig, socialLinks } from "@/lib/site";
-
-const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const supportingCopy =
   "Custom builds, platform work, 3D, AI automation — or something that doesn't fit a neat box. Whatever the stack or the brief, I adapt fast and ship things that look expensive. One developer, full attention.";
@@ -20,22 +16,11 @@ const socialLinkClass =
   "label group inline-flex items-center gap-1.5 py-1 text-muted transition-colors duration-300 hover:text-foreground focus-visible:text-foreground";
 
 export function Contact() {
-  const reduceMotion = useReducedMotion() === true;
-
-  const reveal = (delay: number) => ({
-    initial: reduceMotion ? false : { opacity: 0, y: 18 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.25 },
-    transition: reduceMotion
-      ? { duration: 0 }
-      : { duration: 0.7, delay, ease: EASE },
-  });
-
   return (
     <section id="contact" aria-labelledby="contact-heading" className="relative">
       <div className="shell section-gap">
         <StackCard className="glass-pad">
-        <motion.div className="contact-reveal" {...reveal(0)}>
+        <div className="contact-reveal" data-reveal>
           <p className="label flex items-center gap-2.5 text-muted">
             <span
               aria-hidden="true"
@@ -55,11 +40,11 @@ export function Contact() {
           <p className="mt-8 max-w-[55ch] text-base leading-relaxed text-muted sm:text-lg">
             {supportingCopy}
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
+        <div
           className="contact-reveal mt-10 flex flex-col items-stretch gap-3 sm:mt-12 sm:flex-row sm:items-center sm:gap-4"
-          {...reveal(0.1)}
+          data-reveal
         >
           <a
             href={siteConfig.whatsapp}
@@ -104,11 +89,11 @@ export function Contact() {
               />
             </svg>
           </a>
-        </motion.div>
+        </div>
 
-        <motion.div
+        <div
           className="contact-reveal mt-16 flex flex-col gap-6 border-t border-line pt-8 sm:mt-20 sm:flex-row sm:items-center sm:justify-between"
-          {...reveal(0.2)}
+          data-reveal
         >
           <p className="label flex flex-wrap items-center gap-x-2 gap-y-1.5 text-muted">
             {availability.map((item, index) => (
@@ -146,7 +131,7 @@ export function Contact() {
               </li>
             ))}
           </ul>
-        </motion.div>
+        </div>
         </StackCard>
       </div>
     </section>

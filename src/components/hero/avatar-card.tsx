@@ -1,18 +1,27 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 
 /**
- * The "about" box that sits beside the hero in the top glass frame. It shows a
- * static avatar poster (no Spline runtime — near-zero load) behind a skeleton
- * shimmer that crossfades out once the image decodes. Drop a full-figure export
- * in at /hero/avatar-poster.png and this upgrades automatically.
+ * The companion card that sits beside the hero in the top glass frame. The card
+ * chrome and copy stay put; the media layer is an original 3D monolith robot
+ * (Three.js via React Three Fiber) whose slabs lean and stagger toward the
+ * cursor. It is lazy-loaded (ssr: false) so Three.js never ships in the server
+ * bundle and never blocks first paint.
+ *
+ * Earlier takes are kept in the repo if you want to switch back: the X-wing
+ * (`./xwing`), the 3D mech drone (`./drone-3d`), the 2D vector drone (`./drone`)
+ * and the robot (`./mascot`) — just swap the import below.
  */
+const Ship = dynamic(
+  () => import("./monolith").then((module) => module.Monolith),
+  {
+    ssr: false,
+    loading: () => <div className="drone-loading" aria-hidden="true" />,
+  },
+);
 export function AvatarCard({ className }: { className?: string }) {
-  const [loaded, setLoaded] = useState(false);
-
   return (
     <div
       id="about"
@@ -27,19 +36,9 @@ export function AvatarCard({ className }: { className?: string }) {
       </div>
 
       <div className="about-card__media">
-        <div
-          aria-hidden="true"
-          className={cn("skeleton", loaded && "skeleton--hidden")}
-        />
-        <Image
-          src="/hero/avatar-poster.png"
-          alt="Gautam Singh"
-          fill
-          priority
-          sizes="(min-width: 1024px) 40vw, 100vw"
-          onLoad={() => setLoaded(true)}
-          className={cn("about-card__img", loaded && "is-loaded")}
-        />
+        <div className="absolute inset-0 pb-40 pt-4">
+          <Ship />
+        </div>
       </div>
 
       <div className="about-card__foot">

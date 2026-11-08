@@ -87,6 +87,36 @@ export function StackCard({
           },
         },
       );
+
+      // Content reveal — the panel's marked content staggers up and fades in as
+      // the card enters. `data-reveal="fade"` opts an element into opacity-only
+      // (used where inner mask / uncover reveals already own the vertical move).
+      const items = el.querySelectorAll<HTMLElement>("[data-reveal]");
+
+      if (items.length) {
+        gsap.set(items, { opacity: 0 });
+
+        const rise = Array.from(items).filter(
+          (node) => node.dataset.reveal !== "fade",
+        );
+
+        if (rise.length) {
+          gsap.set(rise, { y: 28 });
+        }
+
+        gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.09,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 82%",
+            once: true,
+          },
+        });
+      }
     },
     { scope: ref, dependencies: [reduce, fromScale, fromRotate] },
   );

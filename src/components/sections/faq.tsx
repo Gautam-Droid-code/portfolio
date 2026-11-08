@@ -39,20 +39,11 @@ export function Faq() {
   const reduceMotion = useReducedMotion() === true;
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const reveal = (delay: number) => ({
-    initial: reduceMotion ? false : { opacity: 0, y: 16 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.2 },
-    transition: reduceMotion
-      ? { duration: 0 }
-      : { duration: 0.6, delay, ease: EASE },
-  });
-
   return (
     <section id="faq" aria-labelledby="faq-heading" className="relative">
       <div className="shell section-gap">
         <StackCard className="glass-pad">
-        <motion.div className="faq-reveal" {...reveal(0)}>
+        <div className="faq-reveal" data-reveal>
           <p className="label flex items-center gap-2.5 text-muted">
             <span
               aria-hidden="true"
@@ -68,7 +59,7 @@ export function Faq() {
             Things you might ask
             <span className="text-accent">.</span>
           </h2>
-        </motion.div>
+        </div>
 
         <div className="mt-14 border-t border-line sm:mt-20">
           {faqs.map((faq, index) => {
@@ -77,10 +68,10 @@ export function Faq() {
             const panelId = `faq-panel-${index + 1}`;
 
             return (
-              <motion.div
+              <div
                 key={faq.question}
                 className="faq-reveal border-b border-line"
-                {...reveal(index * 0.05)}
+                data-reveal
               >
                 <h3 className="font-sans text-lg font-medium normal-case leading-snug tracking-tight sm:text-xl">
                   <button
@@ -134,7 +125,7 @@ export function Faq() {
                     {faq.answer}
                   </p>
                 </motion.div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

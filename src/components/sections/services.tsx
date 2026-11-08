@@ -1,7 +1,5 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-
 import { StackCard } from "@/components/motion";
 
 const services = [
@@ -37,25 +35,12 @@ const services = [
   },
 ] as const;
 
-const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
 export function Services() {
-  const reduceMotion = useReducedMotion() === true;
-
-  const reveal = (delay: number) => ({
-    initial: reduceMotion ? false : { opacity: 0, y: 16 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.2 },
-    transition: reduceMotion
-      ? { duration: 0 }
-      : { duration: 0.6, delay, ease: EASE },
-  });
-
   return (
     <section id="services" aria-labelledby="services-heading" className="relative">
       <div className="shell section-gap">
         <StackCard className="glass-pad">
-        <motion.div className="services-reveal" {...reveal(0)}>
+        <div className="services-reveal" data-reveal>
           <p className="label flex items-center gap-2.5 text-muted">
             <span
               aria-hidden="true"
@@ -71,14 +56,14 @@ export function Services() {
             What I actually do
             <span className="text-accent">.</span>
           </h2>
-        </motion.div>
+        </div>
 
         <ol className="mt-14 border-t border-line sm:mt-20">
           {services.map((service, index) => (
-            <motion.li
+            <li
               key={service.number}
               className="services-reveal group border-b border-line"
-              {...reveal(index * 0.05)}
+              data-reveal
             >
               <div className="grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-start gap-x-4 gap-y-2 py-7 transition-transform duration-base ease-out-expo lg:grid-cols-[3.5rem_minmax(0,1fr)_minmax(0,1.1fr)_2rem] lg:gap-x-8 lg:py-9 lg:group-hover:-translate-y-0.5">
                 <span className="label pt-0.5 tabular-nums text-faint transition-colors duration-fast group-hover:text-accent lg:pt-1">
@@ -106,7 +91,7 @@ export function Services() {
                   />
                 </svg>
               </div>
-            </motion.li>
+            </li>
           ))}
         </ol>
         </StackCard>

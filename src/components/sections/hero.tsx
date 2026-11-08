@@ -1,4 +1,5 @@
 import { AvatarCard } from "@/components/hero/avatar-card";
+import { HeroSpotlight } from "@/components/hero/hero-spotlight";
 import { siteConfig } from "@/lib/site";
 
 const traits = [
@@ -8,15 +9,18 @@ const traits = [
 ] as const;
 
 /**
- * Top section: a single glass frame holding two boxes — the hero (left) and the
- * static-avatar "about" card (right) — floating over the fixed blue aurora.
+ * Top section: the hero text and the companion "about" card share one glass
+ * frame floating over the fixed blue aurora. The word "expensive" takes a
+ * theme-aware metallic treatment (see `.metal-text`); the card beside it holds
+ * the cursor-tracking mascot and carries the page's `#about` anchor.
  */
 export function Hero() {
   return (
     <section id="hero" aria-labelledby="hero-heading" className="relative">
       <div className="shell pt-[calc(var(--header-h)_+_clamp(1.5rem,4vw,3rem))] pb-[clamp(1rem,3vw,2.5rem)]">
         <div className="glass-panel overflow-hidden p-3.5">
-          <div className="grid gap-3.5 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
+          <HeroSpotlight />
+          <div className="relative z-10 grid gap-3.5 lg:grid-cols-[1.15fr_0.85fr]">
             {/* HERO BOX */}
             <div className="relative flex min-h-[32rem] flex-col p-[clamp(1.4rem,3vw,2.4rem)]">
               <div
@@ -48,7 +52,8 @@ export function Hero() {
                 <br />
                 looks
                 <br />
-                expensive<span className="text-accent">.</span>
+                <span className="metal-text">expensive</span>
+                <span className="text-accent">.</span>
               </h1>
 
               <ul
@@ -94,7 +99,7 @@ export function Hero() {
                   </svg>
                 </a>
 
-                <p className="max-w-[34ch] text-xs leading-relaxed text-faint sm:text-[0.8125rem]">
+                <p className="max-w-[34ch] text-sm leading-relaxed text-muted">
                   Custom full-stack builds, Shopify &amp; WordPress stores, 3D
                   experiences and AI automation — for brands that refuse to look
                   like everyone else.
@@ -102,7 +107,7 @@ export function Hero() {
               </div>
             </div>
 
-            {/* ABOUT BOX */}
+            {/* COMPANION CARD */}
             <AvatarCard />
           </div>
         </div>

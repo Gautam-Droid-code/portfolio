@@ -287,6 +287,88 @@ html.light {
     );
   }
 
+  /* Theme-aware metallic headline word. Built from the theme tokens so it
+     reads as bright chrome on the dark ground and dark metal on paper, never
+     an invisible white-on-white. */
+  .metal-text {
+    background-image: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--foreground) 55%, var(--background)) 0%,
+      var(--foreground) 24%,
+      color-mix(in srgb, var(--foreground) 80%, var(--accent)) 40%,
+      color-mix(in srgb, var(--accent) 62%, var(--foreground)) 50%,
+      var(--foreground) 64%,
+      color-mix(in srgb, var(--foreground) 55%, var(--background)) 82%,
+      var(--accent) 100%
+    );
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: metal-sheen 6s linear infinite;
+    filter: drop-shadow(
+      0 2px 18px color-mix(in srgb, var(--accent) 26%, transparent)
+    );
+  }
+
+  /* Hero mascot: gentle idle bob (on an inner group) + a click hop (outer). */
+  .mascot-float {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: mascot-bob 4.5s var(--ease-in-out-quint) infinite;
+  }
+
+  .mascot-hop {
+    animation: mascot-hop 0.5s var(--ease-spring);
+  }
+
+  /* Hero mech drone: idle hover bob (inner group) + pulsing thruster halos.
+     The halos carry a soft resting glow; on hover the whole craft runs hot and
+     a click fires a one-shot burst. */
+  .drone-float {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: drone-bob 4.2s var(--ease-in-out-quint) infinite;
+  }
+
+  .drn-halo {
+    opacity: 0.26;
+    transform-box: fill-box;
+    transform-origin: center;
+    filter: blur(2px);
+    animation: drone-pulse 2.6s ease-in-out infinite;
+    transition: opacity 240ms var(--ease-out-expo);
+  }
+
+  .drone.is-hot .drn-halo {
+    opacity: 0.52;
+  }
+
+  .drone.is-burst .drn-halo {
+    animation: drone-burst 0.55s var(--ease-spring);
+  }
+
+  /* Cursor-following spotlight over the hero glass panel. Clipped to the
+     panel's rounded corners; position is driven by --spot-x / --spot-y from
+     HeroSpotlight. Accent-tinted so it stays on-brand in both themes. */
+  .hero-spotlight {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out-expo);
+    background: radial-gradient(
+      circle 420px at var(--spot-x, 50%) var(--spot-y, 28%),
+      color-mix(in srgb, var(--accent) 20%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 7%, transparent) 42%,
+      transparent 66%
+    );
+    mix-blend-mode: screen;
+  }
+
   .hero-grid {
     background-image:
       linear-gradient(to right, var(--foreground) 1px, transparent 1px),
@@ -547,6 +629,69 @@ html.light {
   }
 }
 
+@keyframes metal-sheen {
+  to {
+    background-position: 220% 0;
+  }
+}
+
+@keyframes mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes mascot-hop {
+  30% {
+    transform: translateY(-22px) rotate(-3deg);
+  }
+  60% {
+    transform: translateY(0) rotate(2deg);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes drone-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes drone-pulse {
+  0%,
+  100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes drone-burst {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  40% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.26;
+  }
+}
+
 @keyframes ribbon-flow-1 {
   0%,
   100% {
@@ -668,6 +813,23 @@ html.light {
     animation: none !important;
   }
 
+  /* The metallic headline freezes at a balanced position rather than mid-sweep;
+     the mascot rests still. */
+  .metal-text {
+    animation: none !important;
+    background-position: 50% 0;
+  }
+
+  .mascot-float,
+  .mascot-hop {
+    animation: none !important;
+  }
+
+  .drone-float,
+  .drn-halo {
+    animation: none !important;
+  }
+
   /* Reveals are decorative: reduced motion gets the resting state immediately. */
   .work-reveal,
   .about-reveal,
@@ -676,5 +838,198 @@ html.light {
   .contact-reveal {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .wc-card {
+    transition: none !important;
+  }
+
+  .wc-detail {
+    animation: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Selected-work carousel                                                     */
+/* Cards fan from the active one: a curved vertical arc on desktop, a          */
+/* hand-of-cards fan on mobile. The layout switch is pure CSS, driven by the   */
+/* per-card --o (signed offset) and --a (abs offset) variables.               */
+/* -------------------------------------------------------------------------- */
+
+.wc {
+  display: grid;
+  gap: 4.5rem 3rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .wc {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+}
+
+.wc-stage {
+  position: relative;
+  height: 380px;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+@media (min-width: 1024px) {
+  .wc-stage {
+    height: 470px;
+  }
+}
+
+.wc-card {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 232px;
+  height: 310px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface);
+  box-shadow: 0 24px 55px -24px rgba(0, 0, 0, 0.7);
+  z-index: calc(100 - var(--a));
+  opacity: calc(1 - var(--a) * 0.34);
+  /* mobile: hand-of-cards fan */
+  transform: translateX(calc(var(--o) * 50px))
+    translateY(calc(var(--a) * 20px)) rotate(calc(var(--o) * 7deg))
+    scale(calc(1 - var(--a) * 0.08));
+  transition:
+    transform 0.6s var(--ease-out-expo),
+    opacity 0.6s var(--ease-out-expo),
+    box-shadow 0.4s var(--ease-out-expo);
+}
+
+@media (min-width: 1024px) {
+  /* desktop: curved vertical arc */
+  .wc-card {
+    width: 300px;
+    height: 384px;
+    transform: translateY(calc(var(--o) * 132px))
+      translateX(calc(var(--a) * var(--a) * -18px))
+      rotate(calc(var(--o) * -8deg)) scale(calc(1 - var(--a) * 0.12));
+    opacity: calc(1 - var(--a) * 0.26);
+  }
+}
+
+.wc-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.wc-card[aria-current="true"] {
+  box-shadow: 0 34px 80px -28px color-mix(in srgb, var(--accent) 55%, #000);
+}
+
+.wc-card__img {
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.wc-card__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.12) 52%,
+    transparent 78%
+  );
+}
+
+.wc-card__meta {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.1rem 1.2rem;
+  text-align: left;
+}
+
+.wc-card__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1.55rem;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: #f5f5f0;
+}
+
+.wc-card__cat {
+  color: rgba(245, 245, 240, 0.7);
+}
+
+.wc-controls {
+  position: absolute;
+  left: 50%;
+  bottom: -3rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  z-index: 200;
+}
+
+.wc-nav {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--foreground);
+  transition:
+    background-color 0.2s var(--ease-out-expo),
+    transform 0.2s var(--ease-out-expo);
+}
+
+.wc-nav:hover {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+.wc-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.wc-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--hairline-strong);
+  transition:
+    width 0.3s var(--ease-out-expo),
+    background-color 0.3s var(--ease-out-expo);
+}
+
+.wc-dot.is-on {
+  width: 1.5rem;
+  background: var(--accent);
+}
+
+.wc-detail {
+  animation: wc-fade 0.5s var(--ease-out-expo);
+}
+
+@keyframes wc-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
