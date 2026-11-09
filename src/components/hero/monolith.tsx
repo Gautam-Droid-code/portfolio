@@ -185,6 +185,8 @@ export function Monolith() {
   const pointer = useRef({ x: 0, y: 0 });
   const accent = useAccent();
   const [reduce, setReduce] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -204,22 +206,51 @@ export function Monolith() {
     };
   }, []);
 
+  // Pause the WebGL render loop when the canvas is scrolled off-screen or the
+  // tab is hidden. This is the main mobile-scroll fix: once you scroll past the
+  // hero, the 3D stops rendering instead of competing with the scroll.
+  useEffect(() => {
+    const node = wrapRef.current;
+    if (!node) return;
+
+    const onVisibility = () => {
+      if (document.hidden) setVisible(false);
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting && !document.hidden),
+      { threshold: 0.05 },
+    );
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
   const accentColor = safeColor(accent, "#9ab6d2");
+  // "always" only while visible and motion is allowed; otherwise "demand"
+  // freezes on the last painted frame at zero ongoing cost.
+  const animate = visible && !reduce;
 
   return (
-    <Canvas
-      className="h-full w-full"
-      dpr={[1, 2]}
-      camera={{ position: [0, 0, 6], fov: 42 }}
-      gl={{ antialias: true, alpha: true }}
-      style={{ background: "transparent" }}
-      frameloop={reduce ? "demand" : "always"}
-    >
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[3, 5, 4]} intensity={1.5} />
-      <directionalLight position={[-4, 2, 2]} intensity={0.5} color={accentColor} />
-      <pointLight position={[0, 1, 3]} intensity={1.6} distance={9} color={accentColor} />
-      <MonolithBot pointer={pointer} accent={accent} reduce={reduce} />
-    </Canvas>
+    <div ref={wrapRef} className="h-full w-full">
+      <Canvas
+        className="h-full w-full"
+        dpr={[1, 1.5]}
+        camera={{ position: [0, 0, 6], fov: 42 }}
+        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        style={{ background: "transparent" }}
+        frameloop={animate ? "always" : "demand"}
+      >
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[3, 5, 4]} intensity={1.5} />
+        <directionalLight position={[-4, 2, 2]} intensity={0.5} color={accentColor} />
+        <pointLight position={[0, 1, 3]} intensity={1.6} distance={9} color={accentColor} />
+        <MonolithBot pointer={pointer} accent={accent} reduce={reduce} />
+      </Canvas>
+    </div>
   );
 }

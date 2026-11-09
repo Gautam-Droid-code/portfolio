@@ -1,0 +1,32 @@
+# Gautam Singh — Developer & Designer
+
+> Independent developer and designer building custom full-stack websites, Shopify and WordPress stores, 3D web experiences, and AI automation for ambitious brands. Based in India, working worldwide.
+
+## About
+
+Gautam Singh is a freelance web developer and designer. He builds bespoke, custom-coded websites and applications — no templates, no page-builders. Work spans custom e-commerce, Shopify and WordPress (standard, customized, or headless), full web apps, interactive 3D experiences, and AI automation (chatbots, concierges, workflow automations). Approach: move fast on the build, but ship something solid and well-engineered underneath.
+
+## Services
+
+- Custom full-stack website development (Next.js, React, TypeScript)
+- Shopify store design and development — standard, customized, or fully headless
+- WordPress website design and development — standard, customized, or headless
+- Custom e-commerce platforms built from scratch
+- Web applications designed and built end to end
+- Interactive 3D website experiences (Three.js, Spline, GSAP)
+- AI automation: chatbots, concierges, and workflow automations
+
+## Selected work
+
+- [Vanta](https://vanta-ecom-store.vercel.app/): a custom streetwear e-commerce platform built from scratch — its own admin CMS, customer accounts, saved bags, wishlist, and an optimized image pipeline. Stack: Next.js, React, TypeScript, Postgres/Prisma, Framer Motion.
+- [Aether Motors](https://aether-ev.vercel.app/): a cinematic showroom for a premium EV brand — a live 3D hero, GSAP scroll choreography, inventory browsing, test-drive booking, and an AI concierge. Stack: Next.js, Spline 3D, GSAP, Lenis, Supabase.
+
+## Contact
+
+- WhatsApp: +91 88558 82679
+- Email: singhgautam200331@gmail.com
+- GitHub: https://github.com/Gautam-Droid-code
+- X / Twitter: https://x.com/gautamsingh2003
+- LinkedIn: https://www.linkedin.com/in/gautam-singh-7318b5421/
+
+To start a project: message on WhatsApp or email with a rough idea of what you need.

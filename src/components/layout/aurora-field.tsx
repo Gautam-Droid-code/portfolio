@@ -1,14 +1,52 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import "./aurora.css";
 
 /**
- * Fixed 3D-style background larped from the reference render: billowing satin —
- * a dark glossy sheet whose shape morphs continuously (SMIL path animation)
- * through several irregular states, with a bright bloom glowing up between the
- * folds and specular highlights sliding across the dark surface. Each section is
- * a frosted-glass panel that scrolls over this layer. Styles live in
- * ./aurora.css. Motion is disabled under prefers-reduced-motion.
+ * Fixed 3D-style background: a dark glossy sheet whose shape morphs continuously
+ * (SMIL path animation) with a bright bloom and sliding specular highlights.
+ * Each section is a frosted-glass panel that scrolls over this layer. Styles
+ * live in ./aurora.css; the CSS blob motion is frozen on phones and under
+ * prefers-reduced-motion there.
+ *
+ * The SVG morph is SMIL, which CSS can't stop, so it's paused from JS: on phones
+ * and under reduced motion it freezes entirely, and it pauses while the tab is
+ * hidden. This keeps scrolling smooth on mobile and fixes reduced-motion (which
+ * previously left the SMIL running).
  */
 export function AuroraField() {
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || typeof svg.pauseAnimations !== "function") return;
+
+    const mobile = window.matchMedia("(max-width: 768px)");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const update = () => {
+      const freeze = mobile.matches || reduce.matches || document.hidden;
+      try {
+        if (freeze) svg.pauseAnimations();
+        else svg.unpauseAnimations();
+      } catch {
+        /* no-op */
+      }
+    };
+
+    update();
+    mobile.addEventListener("change", update);
+    reduce.addEventListener("change", update);
+    document.addEventListener("visibilitychange", update);
+
+    return () => {
+      mobile.removeEventListener("change", update);
+      reduce.removeEventListener("change", update);
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, []);
+
   return (
     <div className="aurora" aria-hidden="true">
       <span className="aurora__flow aurora__flow--1" />
@@ -17,6 +55,7 @@ export function AuroraField() {
       <span className="aurora__flow aurora__flow--bloom" />
 
       <svg
+        ref={svgRef}
         className="aurora__fold"
         viewBox="0 0 1440 900"
         preserveAspectRatio="xMidYMid slice"

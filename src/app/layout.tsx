@@ -14,6 +14,7 @@ import { SiteReveal } from "@/components/layout/site-reveal";
 import { SkipLink } from "@/components/layout/skip-link";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { StructuredData } from "@/components/layout/structured-data";
 import { LoadingProvider } from "@/context/loading-context";
 import { siteConfig } from "@/lib/site";
 
@@ -33,6 +34,21 @@ export const metadata: Metadata = {
   creator: "@gautamsingh2003",
   publisher: siteConfig.name,
   category: "technology",
+  keywords: [
+    "Gautam Singh",
+    "freelance web developer",
+    "web designer",
+    "Next.js developer",
+    "React developer",
+    "Shopify developer",
+    "WordPress developer",
+    "headless commerce",
+    "custom e-commerce development",
+    "3D websites",
+    "Three.js developer",
+    "AI automation",
+    "full-stack developer India",
+  ],
   alternates: {
     canonical: "/",
   },
@@ -80,6 +96,7 @@ export default function RootLayout({
       className={`${bricolage.variable} ${GeistSans.variable} ${GeistMono.variable} is-loading`}
     >
       <body className="min-h-svh bg-background font-sans text-foreground antialiased">
+        <StructuredData />
         <AuroraField />
 
         <ThemeProvider>

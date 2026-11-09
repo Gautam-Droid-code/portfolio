@@ -200,3 +200,25 @@ html.light:root {
     animation: none !important;
   }
 }
+
+/* Phones: freeze the continuous motion and lighten the heaviest blurs so
+   scrolling stays smooth. The look is kept as a static gradient field, and the
+   44px backdrop-filter — which repaints on every scroll frame — is cut right
+   down (the single biggest scroll cost on mobile). The SVG's SMIL morph is
+   paused from JS in aurora-field.tsx, since CSS can't stop SMIL. */
+@media (max-width: 768px) {
+  .aurora__flow,
+  .aurora__fold-move {
+    animation: none !important;
+  }
+  .aurora__flow {
+    filter: blur(22px);
+  }
+  :root:root {
+    --glass-blur: 16px;
+    --glass-sat: 1.2;
+  }
+  html.light:root {
+    --glass-blur: 16px;
+  }
+}

@@ -18,7 +18,30 @@ const Ship = dynamic(
   () => import("./monolith").then((module) => module.Monolith),
   {
     ssr: false,
-    loading: () => <div className="drone-loading" aria-hidden="true" />,
+    loading: () => (
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "grid",
+          placeItems: "center",
+        }}
+      >
+        <div
+          style={{
+            width: "58%",
+            height: "46%",
+            borderRadius: 16,
+            background:
+              "linear-gradient(110deg, rgba(255,255,255,0.02) 25%, rgba(150,182,210,0.12) 50%, rgba(255,255,255,0.02) 75%)",
+            backgroundSize: "220% 100%",
+            animation: "monoSkeleton 1.5s ease-in-out infinite",
+          }}
+        />
+        <style>{`@keyframes monoSkeleton{0%{background-position:200% 0}100%{background-position:-120% 0}}`}</style>
+      </div>
+    ),
   },
 );
 export function AvatarCard({ className }: { className?: string }) {
