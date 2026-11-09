@@ -165,9 +165,9 @@ html.light {
   --color-accent-solid: var(--accent-solid);
   --color-accent-on-solid: var(--accent-on-solid);
 
-  --font-display: var(--font-bricolage), "Arial Black", sans-serif;
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-display: var(--font-anton), "Arial Narrow", "Arial Black", sans-serif;
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, "SFMono-Regular", monospace;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -207,6 +207,10 @@ html.light {
     color: var(--foreground);
     font-family: var(--font-sans);
     text-rendering: optimizeLegibility;
+    /* Anton ships a single weight; keep it crisp instead of letting the browser
+       fake the 800 that headings request. Space Grotesk's real weights are
+       unaffected. */
+    font-synthesis-weight: none;
   }
 
   h1,
