@@ -8,10 +8,10 @@ const emailBodyEncoded = encodeURIComponent(projectMessage).replace(/'/g, "%27")
 export const siteConfig = {
   name: "Gautam Singh",
   role: "Developer & Designer",
-  // TODO: point this at the production domain once it is live.
+  // Set per-environment via NEXT_PUBLIC_SITE_URL; the literal is the local fallback.
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://gautamsingh.dev",
   description:
-    "Gautam Singh is a developer and designer building custom full-stack websites, Shopify and WordPress stores, 3D experiences, and AI automation for ambitious brands.",
+    "Gautam Singh builds custom full-stack websites, Shopify and WordPress stores, 3D experiences and AI automation for ambitious brands. Zero templates.",
   email,
   emailHref: `mailto:${email}?subject=${encodeURIComponent(
     emailSubject,
