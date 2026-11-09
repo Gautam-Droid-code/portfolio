@@ -1,20 +1,83 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import type { Project } from "@/lib/projects";
 
-export type WorkProject = {
-  slug: string;
-  number: string;
-  image: string;
-  imageAlt: string;
-  category: string;
-  title: string;
-  description: string;
-  tags: readonly string[];
-  role: string;
-  href: string;
-};
+/** Branded placeholder for a project with no screenshot yet. */
+function BrandTile({ title }: { title: string }) {
+  const monogram = title.slice(0, 2).toUpperCase();
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "grid",
+        placeItems: "center",
+        background:
+          "radial-gradient(120% 90% at 78% 12%, color-mix(in srgb, var(--color-blue, #4f7ca6) 55%, transparent), transparent 60%), radial-gradient(120% 110% at 12% 100%, color-mix(in srgb, var(--color-blue, #4f7ca6) 45%, var(--color-ink, #0d0d0d)), transparent 62%), var(--color-ink, #0d0d0d)",
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage:
+            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "2.6rem 2.6rem",
+          opacity: 0.05,
+          maskImage: "radial-gradient(75% 70% at 55% 30%, #000 10%, transparent 80%)",
+          WebkitMaskImage:
+            "radial-gradient(75% 70% at 55% 30%, #000 10%, transparent 80%)",
+        }}
+      />
+      <span
+        style={{
+          fontFamily: "var(--font-display, sans-serif)",
+          fontWeight: 800,
+          fontSize: "clamp(3.5rem, 9vw, 6rem)",
+          letterSpacing: "-0.04em",
+          lineHeight: 1,
+          color: "color-mix(in srgb, var(--color-paper, #f5f5f0) 10%, transparent)",
+          transform: "translateY(-12%)",
+        }}
+      >
+        {monogram}
+      </span>
+    </span>
+  );
+}
+
+function UpcomingBadge() {
+  return (
+    <span
+      className="label"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.4rem",
+        borderRadius: 999,
+        border: "1px solid color-mix(in srgb, var(--accent, #9ab6d2) 45%, transparent)",
+        background: "color-mix(in srgb, var(--accent, #9ab6d2) 14%, transparent)",
+        color: "var(--accent, #9ab6d2)",
+        padding: "0.3rem 0.6rem",
+      }}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          width: "0.4rem",
+          height: "0.4rem",
+          borderRadius: 999,
+          background: "currentColor",
+        }}
+      />
+      In the works
+    </span>
+  );
+}
 
 const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
 
@@ -42,7 +105,7 @@ function ArrowUpRight({ className = "" }: { className?: string }) {
  *
  * Drag/swipe the stack, use the arrows or dots, or click a card to focus it.
  */
-export function WorkCarousel({ projects }: { projects: readonly WorkProject[] }) {
+export function WorkCarousel({ projects }: { projects: readonly Project[] }) {
   const [active, setActive] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
   const [reduce, setReduce] = useState(false);
@@ -170,13 +233,17 @@ export function WorkCarousel({ projects }: { projects: readonly WorkProject[] })
               }}
               style={cardStyle(offset)}
             >
-              <Image
-                src={project.image}
-                alt={project.imageAlt}
-                fill
-                sizes="(min-width: 1024px) 440px, 240px"
-                style={{ objectFit: "cover", pointerEvents: "none" }}
-              />
+              {project.image ? (
+                <Image
+                  src={project.image}
+                  alt={project.imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 440px, 240px"
+                  style={{ objectFit: "cover", pointerEvents: "none" }}
+                />
+              ) : (
+                <BrandTile title={project.title} />
+              )}
               <span
                 aria-hidden="true"
                 style={{
@@ -186,6 +253,17 @@ export function WorkCarousel({ projects }: { projects: readonly WorkProject[] })
                     "linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.12) 52%, transparent 78%)",
                 }}
               />
+              {project.status === "upcoming" && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "1rem",
+                    left: "1.1rem",
+                  }}
+                >
+                  <UpcomingBadge />
+                </span>
+              )}
               <span
                 style={{
                   position: "absolute",
@@ -287,6 +365,11 @@ export function WorkCarousel({ projects }: { projects: readonly WorkProject[] })
           <span className="text-accent">{current.number}</span>
           <span aria-hidden="true">/</span>
           {current.category}
+          {current.status === "upcoming" && (
+            <span className="ml-1">
+              <UpcomingBadge />
+            </span>
+          )}
         </p>
 
         <h3 className="mt-4 text-[clamp(2rem,4.5vw,3.25rem)]">{current.title}</h3>
@@ -315,15 +398,13 @@ export function WorkCarousel({ projects }: { projects: readonly WorkProject[] })
           <span className="text-muted">{current.role}</span>
         </p>
 
-        <a
+        <Link
           href={current.href}
-          target="_blank"
-          rel="noreferrer noopener"
           className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors duration-300 hover:text-accent focus-visible:text-accent"
         >
-          View project
+          {current.status === "upcoming" ? current.cta ?? "Explore" : "View project"}
           <ArrowUpRight className="size-3.5 text-accent" />
-        </a>
+        </Link>
       </div>
 
       <style>{`

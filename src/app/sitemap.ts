@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { projects } from "@/lib/projects";
 import { siteConfig } from "@/lib/site";
 
 // Pinned date, not `new Date()`: under Cache Components a request-time value
@@ -14,5 +15,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
+    ...projects.map((project) => ({
+      url: `${siteConfig.url}/work/${project.slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
   ];
 }

@@ -1,34 +1,6 @@
 import { StackCard } from "@/components/motion";
-import { WorkCarousel, type WorkProject } from "@/components/motion/work-carousel";
-
-const projects: readonly WorkProject[] = [
-  {
-    slug: "vanta",
-    number: "01",
-    image: "/work/vanta.jpg",
-    imageAlt: "VANTA — technical streetwear e-commerce store",
-    category: "Full-stack e-commerce",
-    title: "Vanta",
-    description:
-      "A custom streetwear commerce platform — not a Shopify theme. Built from scratch with its own admin CMS, customer accounts, saved bags, wishlist and an optimized image pipeline. Dark editorial, engineered for the Indian street and tuned for Indian mobile networks.",
-    tags: ["Next.js", "React", "TypeScript", "Postgres / Prisma", "Framer Motion"],
-    role: "Design & full-stack development",
-    href: "https://vanta-ecom-store.vercel.app/",
-  },
-  {
-    slug: "aether",
-    number: "02",
-    image: "/work/aether.jpg",
-    imageAlt: "AETHER Motors — premium electric car showroom",
-    category: "Concept · 3D + AI",
-    title: "Aether Motors",
-    description:
-      "A cinematic showroom for a premium EV brand — a live 3D hero, GSAP scroll choreography, an inventory to browse, test-drive booking, and an AI concierge that helps pick your car. A '$10K-feel' build, kept light with a graceful fallback on mobile.",
-    tags: ["Next.js", "Spline 3D", "GSAP", "Lenis", "Supabase"],
-    role: "Design & development",
-    href: "https://aether-ev.vercel.app/",
-  },
-];
+import { WorkCarousel } from "@/components/motion/work-carousel";
+import { projects } from "@/lib/projects";
 
 export function Work() {
   return (

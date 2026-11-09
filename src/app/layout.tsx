@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Anton, Space_Grotesk, Space_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Space_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -16,17 +17,10 @@ import { StructuredData } from "@/components/layout/structured-data";
 import { LoadingProvider } from "@/context/loading-context";
 import { siteConfig } from "@/lib/site";
 
-const anton = Anton({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-anton",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-space-grotesk",
+  weight: "800",
+  variable: "--font-bricolage",
   display: "swap",
 });
 
@@ -105,7 +99,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${anton.variable} ${spaceGrotesk.variable} ${spaceMono.variable} is-loading`}
+      className={`${bricolage.variable} ${GeistSans.variable} ${spaceMono.variable} is-loading`}
     >
       <body className="min-h-svh bg-background font-sans text-foreground antialiased">
         <StructuredData />
